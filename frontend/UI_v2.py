@@ -2,9 +2,22 @@ import streamlit as st
 import requests
 
 
+<<<<<<< HEAD
 # ============================================================
 # PAGE CONFIGURATION
 # ============================================================
+=======
+import os
+
+BACKEND_URL = os.getenv(
+    "BACKEND_URL",
+    "http://127.0.0.1:8000"
+)
+
+# ----------------------------------
+# Page Config
+# ----------------------------------
+>>>>>>> origin/main
 
 st.set_page_config(
     page_title="AI Academic Assistant",
@@ -246,4 +259,13 @@ if user_message:
             "role": "assistant",
             "content": ai_reply
         }
+<<<<<<< HEAD
     )
+=======
+    )
+
+    with st.chat_message(
+        "assistant"
+    ):
+        st.write(ai_reply)
+>>>>>>> origin/main

@@ -5,9 +5,16 @@ import numpy as np
 from rank_bm25 import BM25Okapi
 from rag.embedder import get_model
 
+<<<<<<< HEAD
 model = get_model()
+=======
+>>>>>>> origin/main
 
+def retrieve_chunks(query, top_k=5):
 
+    model = get_model()
+
+<<<<<<< HEAD
 def retrieve_chunks(
     query,
     keywords=None,
@@ -20,6 +27,8 @@ def retrieve_chunks(
     print(strategy)
     print("==============================")
 
+=======
+>>>>>>> origin/main
     index = faiss.read_index(
         "data/faiss_index/index.bin"
     )
@@ -52,6 +61,7 @@ def retrieve_chunks(
             query_embedding
         ).astype("float32")
 
+<<<<<<< HEAD
         distances, indices = index.search(
             query_embedding,
             top_k * 3
@@ -190,3 +200,6 @@ def retrieve_chunks(
             for i in indices[0]
             if i != -1
         ]
+=======
+    return retrieved_chunks
+>>>>>>> origin/main

@@ -12,7 +12,14 @@ def llm_response(query, conversation=None):
 
     MAX_RETRIES = 2
 
+<<<<<<< HEAD
     current_query = query
+=======
+    context = "\n\n".join(
+        str(chunk)
+        for chunk in similar_chunks
+    )
+>>>>>>> origin/main
 
     for attempt in range(MAX_RETRIES + 1):
 
@@ -20,14 +27,19 @@ def llm_response(query, conversation=None):
             f"\n========== Attempt {attempt + 1} ==========\n"
         )
 
+<<<<<<< HEAD
         similar_chunks = retrieve_chunks(
             current_query
         )
 
         context = ""
+=======
+        return response.text
+>>>>>>> origin/main
 
         sources = []
 
+<<<<<<< HEAD
         for chunk in similar_chunks:
 
             if isinstance(chunk, dict):
@@ -170,3 +182,6 @@ def llm_response(query, conversation=None):
         "in the uploaded academic documents "
         "to answer your question accurately."
     )
+=======
+        return f"Error generating response: {str(e)}"
+>>>>>>> origin/main

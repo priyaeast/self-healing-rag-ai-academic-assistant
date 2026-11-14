@@ -25,4 +25,8 @@ def get_conversation(
     return memory_store.get(
         session_id,
         []
+<<<<<<< HEAD
     )
+=======
+    )
+>>>>>>> origin/main
