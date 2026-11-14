@@ -1,18 +1,10 @@
 import streamlit as st
 import requests
-st.title("🚀 VERSION 22 JULY DEBUG")
-# ----------------------------------
-# Backend URL
-# ----------------------------------
 
-try:
-    BACKEND_URL = st.secrets["BACKEND_URL"].rstrip("/")
-except Exception:
-    BACKEND_URL = "https://self-healing-two-production-2677.up.railway.app"
 
-# ----------------------------------
-# Page Config
-# ----------------------------------
+# ============================================================
+# PAGE CONFIGURATION
+# ============================================================
 
 st.set_page_config(
     page_title="AI Academic Assistant",
@@ -20,16 +12,25 @@ st.set_page_config(
     layout="wide"
 )
 
-# ----------------------------------
-# Session State
-# ----------------------------------
+
+# ============================================================
+# BACKEND CONFIGURATION
+# ============================================================
+
+BACKEND_URL = "http://127.0.0.1:8000"
+
+
+# ============================================================
+# SESSION STATE
+# ============================================================
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# ----------------------------------
-# Sidebar
-# ----------------------------------
+
+# ============================================================
+# SIDEBAR
+# ============================================================
 
 with st.sidebar:
 
@@ -39,83 +40,73 @@ with st.sidebar:
 
     st.subheader("Ask About")
 
-    st.markdown("""
-- Admissions
-- Fee Structure
-- Faculty Information
-- Academic Calendar
-- Student Policies
-- Scholarships
-- JEE Preparation
-- NEET Preparation
-- Study Material
-- Batch Timings
-""")
+    st.markdown(
+        """
+        - Admissions
+        - Fee Structure
+        - Faculty Information
+        - Academic Calendar
+        - Student Policies
+        - Scholarships
+        - JEE Preparation
+        - NEET Preparation
+        - Study Material
+        - Batch Timings
+        """
+    )
 
     st.markdown("---")
 
-    # Test Backend
-    try:
-        health = requests.get(f"{BACKEND_URL}/health", timeout=5)
-
-        if health.status_code == 200:
-            st.success("🟢 Backend Connected")
-        else:
-            st.error("🔴 Backend Not Healthy")
-    except Exception as e:
-        st.error("🔴 Backend Offline")
-        st.caption(str(e))
-
-    st.markdown("---")
-
-    if st.button("🗑️ Clear Chat"):
+    if st.button(
+        "🗑️ Clear Chat",
+        use_container_width=True
+    ):
         st.session_state.messages = []
         st.rerun()
 
-# ----------------------------------
-# Header
-# ----------------------------------
+
+# ============================================================
+# MAIN HEADER
+# ============================================================
 
 st.title("🎓 AI Academic Assistant")
 
 st.write(
-"""
-Welcome!
-
-Ask anything related to:
-
-- Admissions
-- Fees
-- Scholarships
-- Faculty
-- Academic Calendar
-- Student Policies
-- JEE Preparation
-- NEET Preparation
-- Study Materials
-"""
+    "Ask questions about admissions, fees, batches, "
+    "faculty, scholarships, academic policies, "
+    "JEE/NEET preparation, and other academic information."
 )
 
-# ----------------------------------
-# Show Chat History
-# ----------------------------------
+
+# ============================================================
+# DISPLAY CHAT HISTORY
+# ============================================================
 
 for message in st.session_state.messages:
 
     with st.chat_message(message["role"]):
+
         st.write(message["content"])
 
-# ----------------------------------
-# Chat Input
-# ----------------------------------
 
-user_message = st.chat_input("Ask your question...")
+# ============================================================
+# CHAT INPUT
+# ============================================================
 
-# ----------------------------------
-# Handle Chat
-# ----------------------------------
+user_message = st.chat_input(
+    "Ask your question..."
+)
+
+
+# ============================================================
+# PROCESS USER QUESTION
+# ============================================================
 
 if user_message:
+
+    # --------------------------------------------------------
+    # Display user message
+    # --------------------------------------------------------
 
     st.session_state.messages.append(
         {
@@ -127,6 +118,11 @@ if user_message:
     with st.chat_message("user"):
         st.write(user_message)
 
+
+    # --------------------------------------------------------
+    # Prepare API request
+    # --------------------------------------------------------
+
     payload = {
         "user_id": "student",
         "session_id": "academic_session",
@@ -134,6 +130,11 @@ if user_message:
     }
 
     url = f"{BACKEND_URL}/chat"
+
+
+    # --------------------------------------------------------
+    # Call backend
+    # --------------------------------------------------------
 
     with st.chat_message("assistant"):
 
@@ -147,38 +148,98 @@ if user_message:
                     timeout=120
                 )
 
-                # Debug info
-                st.caption(f"Calling: {url}")
-                st.caption(f"Status Code: {response.status_code}")
+
+                # ------------------------------------------------
+                # Successful response
+                # ------------------------------------------------
 
                 if response.status_code == 200:
 
                     data = response.json()
 
-                    ai_reply = data.get("reply", "No reply received.")
+                    ai_reply = data.get(
+                        "reply",
+                        "No reply received."
+                    )
 
                     st.write(ai_reply)
 
-                    # Optional Sources
-                    if "sources" in data and data["sources"]:
+
+                    # ------------------------------------------------
+                    # Display sources
+                    # ------------------------------------------------
+
+                    sources = data.get(
+                        "sources",
+                        []
+                    )
+
+                    if sources:
+
                         st.markdown("### 📄 Sources")
-                        for source in data["sources"]:
-                            st.write(f"• {source}")
+
+                        for source in sources:
+
+                            st.write(
+                                f"• {source}"
+                            )
+
+
+                # ------------------------------------------------
+                # Backend error
+                # ------------------------------------------------
 
                 else:
 
                     ai_reply = (
-                        f"Backend Error ({response.status_code})\n\n"
+                        f"Backend Error "
+                        f"({response.status_code})\n\n"
                         f"{response.text}"
                     )
 
                     st.error(ai_reply)
 
-            except Exception as e:
 
-                ai_reply = str(e)
+            # ----------------------------------------------------
+            # Connection / timeout / unexpected errors
+            # ----------------------------------------------------
+
+            except requests.exceptions.Timeout:
+
+                ai_reply = (
+                    "The request took too long to complete. "
+                    "Please try again."
+                )
 
                 st.error(ai_reply)
+
+
+            except requests.exceptions.ConnectionError:
+
+                ai_reply = (
+                    "Unable to connect to the backend. "
+                    "Please try again later."
+                )
+
+                st.error(ai_reply)
+
+
+            except Exception as e:
+
+                ai_reply = (
+                    "Something went wrong while processing "
+                    "your question."
+                )
+
+                st.error(ai_reply)
+
+                # Keep technical error out of the main UI
+                st.caption(str(e))
+
+
+    # ========================================================
+    # SAVE ASSISTANT RESPONSE
+    # ========================================================
 
     st.session_state.messages.append(
         {

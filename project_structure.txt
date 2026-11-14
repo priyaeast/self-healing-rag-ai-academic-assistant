@@ -1,0 +1,93 @@
+RAG AI Assistant/
+?? .dist/
+?? backend/
+?? frontend/
+    ?? .dockerignore
+    ?? .env
+    ?? .gitignore
+    ?? README.md
+    ?? docker-compose.yml
+    ?? project_structure.txt
+    ?? requirements.txt
+    ?? agentic/
+    ?? api/
+    ?? core/
+    ?? data/
+    ?? database/
+    ?? knowledge_base/
+    ?? llm/
+    ?? memory/
+    ?? models/
+    ?? rag/
+    ?? schemas/
+    ?? sevices/
+    ?? utils/
+        ?? .env
+        ?? .gitignore
+        ?? Dockerfile
+        ?? README.md
+        ?? list_models.py
+        ?? main_v3.py
+        ?? rebuild_knowledge_base.py
+        ?? requirements.txt
+        ?? test_backend.py
+        ?? test_gemini.py
+        ?? test_models.py
+            ?? nodes.py
+            ?? state.py
+            ?? workflow.py
+            ?? chat_v2.py
+            ?? upload_v3.py
+            ?? prompts.py
+        ?? faiss_index/
+        ?? uploads/
+            ?? chunks.pkl
+                ?? index.bin
+                ?? Academic Calendar.pdf
+                ?? Admissions Handbook.pdf
+                ?? Batch Timings.pdf
+                ?? FAQ.pdf
+                ?? Faculty Directory.pdf
+                ?? Fee Structure.pdf
+                ?? JEE Study Guide.pdf
+                ?? NEET Study Guide.pdf
+                ?? Student Policies.pdf
+                ?? Study Material Catalog.pdf
+        ?? .dist/
+            ?? mongo.py
+        ?? faqs/
+        ?? notes/
+        ?? schedules/
+                ?? faqs.txt
+                ?? physics_note.txt
+                ?? batch_info.txt
+            ?? critic.py
+            ?? gemini_client.py
+            ?? generator.py
+            ?? llm_manager.py
+            ?? llm_service.py
+            ?? planner.py
+            ?? reflection.py
+            ?? verifier.py
+            ?? conversation.py
+            ?? memory_manager.py
+            ?? chat_history.py
+            ?? conversation.py
+            ?? embedder.py
+            ?? faiss_store.py
+            ?? hybrid_search.py
+            ?? memory_manager_v2.py
+            ?? pipeline.py
+            ?? rebuild_index.py
+            ?? reranker.py
+            ?? retriever.py
+            ?? text_chunker.py
+            ?? chat_schema.py
+            ?? chat_service.py
+            ?? file_loader.py
+            ?? pdf_loader.py
+        ?? .env
+        ?? .gitignore
+        ?? Dockerfile
+        ?? UI_v2.py
+        ?? requirements.txt

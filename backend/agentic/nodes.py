@@ -44,19 +44,21 @@ def planner_node(state):
     # -----------------------------
     if plan.get("strategy") == "none":
 
-        state["strategy"] = "none"
-        state["approved"] = False
-        state["answer"] = (
-            "I don't have information about this "
-            "in the knowledge base."
-        )
-        state["sources"] = []
-        state["trace"].append("Planner")
+       state["strategy"] = "none"
+       state["approved"] = True
 
-        print("Planner decided to stop.")
-        print(">>> Planner END")
+       state["answer"] = (
+        "I don't have information about this "
+        "in the knowledge base."
+       )
 
-        return state
+       state["sources"] = []
+       state["trace"].append("Planner")
+
+       print("Planner decided to stop.")
+       print(">>> Planner END")
+
+       return state
 
     # -----------------------------
     # Update State
@@ -123,19 +125,22 @@ def retriever_node(state):
 
     if len(chunks) == 0:
 
-       print("No relevant chunks found.")
+      print("No relevant chunks found.")
 
-       state["approved"] = False
+      state["approved"] = True
+      state["strategy"] = "none"
 
-       state["answer"] = (
-        "I don't have information about this in the knowledge base."
-       )
+      state["answer"] = (
+        "I don't have information about this "
+        "in the knowledge base."
+      )
 
-       state["sources"] = []
+      state["sources"] = []
+      state["context"] = ""
 
-       state["trace"].append("Retriever")
+      state["trace"].append("Retriever")
 
-       return state
+      return state
 
     context = ""
 

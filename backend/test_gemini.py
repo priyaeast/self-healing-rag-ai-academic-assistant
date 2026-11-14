@@ -1,16 +1,15 @@
-from google import genai
-from dotenv import load_dotenv
-import os
+from llm.gemini_client import client
 
-load_dotenv()
+try:
+    print("Testing Gemini 2.5 Flash Lite...")
 
-client = genai.Client(
-    api_key=os.getenv("GEMINI_API_KEY")
-)
+    response = client.models.generate_content(
+        model="gemini-3.1-flash-lite",
+        contents="Explain what RAG is in simple words."
+    )
 
-response = client.models.generate_content(
-    model="gemini-2.5-flash",
-    contents="Hello"
-)
+    print("\nGemini Response:")
+    print(response.text)
 
-print(response.text)
+except Exception as e:
+    print("\nGemini Error:", e)

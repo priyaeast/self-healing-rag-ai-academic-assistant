@@ -50,7 +50,19 @@ builder.add_conditional_edges(
     "planner",
     planner_route
 )
-builder.add_edge("retriever", "generator")
+def retriever_route(state):
+
+    if state["strategy"] == "none":
+        print("No relevant context. Ending graph.")
+        return END
+
+    return "generator"
+
+
+builder.add_conditional_edges(
+    "retriever",
+    retriever_route
+)
 builder.add_edge("generator", "critic")
 
 
