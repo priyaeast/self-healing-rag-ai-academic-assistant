@@ -5,8 +5,6 @@ from api.upload_v3 import router as upload_router
 from fastapi import Request
 print("========== MAIN_V3 STARTED ==========")
 
-<<<<<<< HEAD
-
 app = FastAPI(
     title="RAG Chatbot API",
     version="1.0.0"
@@ -33,13 +31,13 @@ async def log_requests(request: Request, call_next):
 
         raise
 
-=======
+
 app = FastAPI(
     title="RAG Chatbot API",
     version="1.0.0"
 )
 
->>>>>>> origin/main
+
 
 # -------------------------
 # ROOT ROUTE
@@ -47,10 +45,7 @@ app = FastAPI(
 # -------------------------
 @app.get("/")
 def root():
-<<<<<<< HEAD
     print("ROOT CALLED")
-=======
->>>>>>> origin/main
     return {
         "status": "healthy",
         "message": "RAG Chatbot API is running"

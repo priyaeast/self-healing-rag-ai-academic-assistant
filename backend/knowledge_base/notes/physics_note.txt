@@ -17,3 +17,34 @@ Power is the rate of doing work.
 Kinetic energy depends on the mass and velocity of an object.
 
 Potential energy is stored energy due to position or configuration.
+
+Chapter 1: Laws of Motion
+- Newton's three laws
+- Force, momentum and inertia
+- Friction
+- Applications of Newton's laws
+
+Chapter 2: Motion
+- Distance and displacement
+- Speed and velocity
+- Acceleration
+- Equations of motion
+- Projectile motion
+
+Chapter 3: Work, Energy and Power
+- Work and its SI unit
+- Kinetic and potential energy
+- Conservation of energy
+- Power and efficiency
+
+Chapter 4: Gravitation
+- Universal law of gravitation
+- Acceleration due to gravity
+- Mass and weight
+- Gravitational potential energy
+
+Chapter 5: Waves
+- Types of waves
+- Frequency and wavelength
+- Wave speed
+- Sound waves

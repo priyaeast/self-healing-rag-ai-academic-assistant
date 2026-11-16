@@ -1,3 +1,5 @@
+import re 
+from rag.graph_retriever import retrieve_graph_context
 from agentic.state import GraphState
 
 from llm.planner import planner_agent
@@ -88,100 +90,163 @@ def planner_node(state):
     
 
 
+
 def retriever_node(state):
+    print("### GRAPH-ENABLED RETRIEVER NODE EXECUTED ###")
     print(">>> Retriever START")
-    print("\n===== RETRIEVER =====")
+    print("\n===== HYBRID GRAPH RETRIEVER =====")
+
+    # =========================================
+    # 1. FAISS + BM25 + Metadata Retrieval
+    # =========================================
 
     chunks = retrieve_chunks(
-
-    query=state["query"],
-
-    keywords=state["keywords"],
-
-    category=state["category"],
-
-    strategy=state["strategy"],
-
-    top_k=state["top_k"]
-
+        query=state["query"],
+        keywords=state["keywords"],
+        category=state["category"],
+        strategy=state["strategy"],
+        top_k=state["top_k"]
     )
 
-    print(
+    print(f"Document chunks retrieved: {len(chunks)}")
 
-        f"Retrieved : {len(chunks)}"
+    # =========================================
+    # 2. Cross Encoder Reranking
+    # =========================================
 
+    print("Running Cross Encoder...")
+
+    if chunks:
+       chunks = rerank(state["query"], chunks)
+    else:
+       chunks = []
+
+    # =========================================
+    # 3. Graph Retrieval
+    # =========================================
+
+    print("\n===== GRAPH RETRIEVAL =====")
+
+    graph_context = retrieve_graph_context(
+        query=state["query"],
+        max_hops=1,
+        max_entities=10,
+        max_relationships=30
     )
 
-    print(
+    if graph_context and not graph_context.startswith(
+        "No matching entities found"
+    ):
 
-        "Running Cross Encoder..."
+        print("Graph context retrieved successfully.")
 
-    )
+    else:
 
-    chunks = rerank(
-    state["query"],
-    chunks
-    )
+        graph_context = ""
 
-    if len(chunks) == 0:
+        print("No relevant graph entities found.")
 
-      print("No relevant chunks found.")
+    # =========================================
+    # 4. Handle Empty Retrieval
+    # =========================================
 
-      state["approved"] = True
-      state["strategy"] = "none"
+    if len(chunks) == 0 and not graph_context:
 
-      state["answer"] = (
-        "I don't have information about this "
-        "in the knowledge base."
-      )
+        print("No relevant document or graph context found.")
 
-      state["sources"] = []
-      state["context"] = ""
+        state["approved"] = True
+        state["strategy"] = "none"
 
-      state["trace"].append("Retriever")
+        state["answer"] = (
+            "I don't have information about this "
+            "in the knowledge base."
+        )
 
-      return state
+        state["sources"] = []
+        state["context"] = ""
 
-    context = ""
+        state["trace"].append("Retriever")
+
+        return state
+
+    # =========================================
+    # 5. Build Document Context
+    # =========================================
+
+    document_context = ""
 
     sources = []
 
     for chunk in chunks:
 
-        context += (
-
-            chunk["text"]
-
-            + "\n\n"
-
+        document_context += (
+            chunk["text"] + "\n\n"
         )
 
-        sources.append(
+        if chunk.get("source"):
+            sources.append(chunk["source"])
 
-            chunk["source"]
+    # =========================================
+    # 6. Combine Document + Graph Context
+    # =========================================
 
+    combined_context = ""
+
+    if document_context.strip():
+
+        combined_context += (
+            "DOCUMENT CONTEXT:\n"
+            + document_context
         )
 
-    state["context"] = context
+    if graph_context.strip():
 
-    state["sources"] = list(
+        combined_context += (
+            "\n\n"
+            "GRAPH CONTEXT:\n"
+            + graph_context
+        )
 
-        set(sources)
+    state["context"] = combined_context
 
+        # Include source documents referenced by graph relationships.
+    
+
+    graph_sources = re.findall(
+        r"\[Source: (.*?)\]",
+        graph_context
     )
 
-    print(
-
-        "Top Sources :",
-
-        state["sources"]
-
+    sources.extend(
+        source.strip()
+        for source in graph_sources
+        if source.strip() and source.strip() != "Unknown"
     )
 
-    print("=================== ==\n")
-    print(">>> Retriever END")
+    state["sources"] = sorted(set(sources))
+
+    # =========================================
+    # 7. Logging
+    # =========================================
+
+    print("\n===== RETRIEVAL SUMMARY =====")
+
+    print("Document chunks:", len(chunks))
+
+    print("Graph context available:", bool(graph_context))
+
+    print("Top Sources:", state["sources"])
+
+    print("Combined context length:", len(combined_context))
+
+    print("=============================")
+
     state["trace"].append("Retriever")
+
+    print(">>> Retriever END")
+
     return state
+
 
     
 

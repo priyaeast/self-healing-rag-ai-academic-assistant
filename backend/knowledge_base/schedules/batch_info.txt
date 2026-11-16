@@ -1,19 +1,10 @@
-Class 11 Physics batch starts at 8:00 AM every Monday, Wednesday, and Friday.
-
-Class 12 Mathematics batch starts at 10:00 AM every Tuesday, Thursday, and Saturday.
-
-NEET Biology special batch starts at 4:00 PM on weekdays.
-
-JEE Advanced crash course starts from 1st June.
-
-Online revision classes are conducted every Sunday evening.
-
-Each class duration is approximately 90 minutes.
-
-Students must arrive 10 minutes before class starts.
-
-Monthly mock tests are conducted on the last Sunday of every month.
-
-Holiday schedules are announced through the student WhatsApp group.
-
-Extra doubt-clearing sessions are available during examination periods.
+Batch Name: Class 11 Physics
+Batch Code: PHY11-01
+Class: 11
+Subject: Physics
+Days: Monday, Wednesday, Friday
+Start Time: 8:00 AM
+Duration: 90 minutes
+Mode: Offline
+Eligibility: Students enrolled in Class 11
+Assessment: Monthly mock tests

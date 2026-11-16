@@ -1,3 +1,4 @@
+
 import faiss
 import pickle
 import numpy as np
@@ -5,16 +6,7 @@ import numpy as np
 from rank_bm25 import BM25Okapi
 from rag.embedder import get_model
 
-<<<<<<< HEAD
-model = get_model()
-=======
->>>>>>> origin/main
 
-def retrieve_chunks(query, top_k=5):
-
-    model = get_model()
-
-<<<<<<< HEAD
 def retrieve_chunks(
     query,
     keywords=None,
@@ -27,23 +19,21 @@ def retrieve_chunks(
     print(strategy)
     print("==============================")
 
-=======
->>>>>>> origin/main
+    model = get_model()
+
+    # Load FAISS index
     index = faiss.read_index(
         "data/faiss_index/index.bin"
     )
 
-    with open(
-        "data/chunks.pkl",
-        "rb"
-    ) as f:
+    # Load document chunks
+    with open("data/chunks.pkl", "rb") as f:
         chunks = pickle.load(f)
 
     search_query = query
 
     if keywords:
-        search_query += " "
-        search_query += " ".join(keywords)
+        search_query += " " + " ".join(keywords)
 
     # =====================================================
     # Semantic Search
@@ -61,7 +51,6 @@ def retrieve_chunks(
             query_embedding
         ).astype("float32")
 
-<<<<<<< HEAD
         distances, indices = index.search(
             query_embedding,
             top_k * 3
@@ -69,7 +58,6 @@ def retrieve_chunks(
 
         results = []
 
-        # relaxed threshold
         THRESHOLD = 2.5
 
         for distance, idx in zip(
@@ -83,13 +71,13 @@ def retrieve_chunks(
             if distance <= THRESHOLD:
                 results.append(chunks[idx])
 
-        # fallback
-        if len(results) == 0:
+        if not results:
 
             print("No chunks under threshold.")
             print("Returning top semantic matches.")
 
             for idx in indices[0]:
+
                 if idx != -1:
                     results.append(chunks[idx])
 
@@ -109,20 +97,22 @@ def retrieve_chunks(
 
         for chunk in chunks:
 
+            chunk_text = chunk["text"].lower()
+
             if (
-                search in chunk["text"].lower()
-                or
-                any(
-                    k.lower() in chunk["text"].lower()
-                    for k in (keywords or [])
+                search in chunk_text
+                or any(
+                    keyword.lower() in chunk_text
+                    for keyword in (keywords or [])
                 )
             ):
+
                 results.append(chunk)
 
         return results[:top_k]
 
     # =====================================================
-    # Hybrid Search
+    # Hybrid Search: FAISS + BM25
     # =====================================================
 
     elif strategy == "hybrid":
@@ -163,19 +153,23 @@ def retrieve_chunks(
         merged = []
         seen = set()
 
-        for idx in list(faiss_indices[0]) + list(bm25_indices):
+        for idx in (
+            list(faiss_indices[0]) +
+            list(bm25_indices)
+        ):
 
             if idx == -1:
                 continue
 
-            if idx not in seen:
+            if idx not in seen and idx < len(chunks):
+
                 seen.add(idx)
                 merged.append(chunks[idx])
 
         return merged[:top_k]
 
     # =====================================================
-    # Default
+    # Default: Semantic Search
     # =====================================================
 
     else:
@@ -200,6 +194,3 @@ def retrieve_chunks(
             for i in indices[0]
             if i != -1
         ]
-=======
-    return retrieved_chunks
->>>>>>> origin/main
