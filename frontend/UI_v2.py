@@ -21,7 +21,7 @@ st.set_page_config(
 # Change 8010 if your FastAPI server is running on another port.
 BACKEND_URL = os.getenv(
     "BACKEND_URL",
-    "http://127.0.0.1:8010"
+    "https://self-healing-rag-ai-academic-assistant-production.up.railway.app"
 ).rstrip("/")
 
 # ============================================================
